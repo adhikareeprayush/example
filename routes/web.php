@@ -1,47 +1,10 @@
 <?php
+use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Job;
 
-Route::get('/', function () {
-    return view('home');
-});
+// Index
+Route::view('/','home');
+// Contacts Page
+Route::view('/contact','contact');
 
-Route::get('/jobs', function () {
-
-    $jobs = Job::with('employer')->latest()->simplePaginate(3);
-
-    return view('jobs.index', ['jobs'=>$jobs]);
-});
-
-Route::get('/job/create', function ()  {
-    return view('jobs.create');
-});
-
-Route::get('/job/{id}', function ($id)  {
-
-        $job = Job::find($id);
-
-        return view('jobs.show', ['job'=>$job]);
-});
-
-Route::post('/jobs',function(){
-
-    //validation...
-    request()->validate([
-        'title' => ['required','min:3'],
-        'salary' => 'required',
-    ]);
-
-    //creating the job into the database
-    Job::create([
-        'title' => request('title'),
-        'salary'=> request('salary'),
-        'employer_id'=> 1,
-    ]);
-
-    return redirect('/jobs');
-});
-
-Route::get('/contact', function () {
-    return view('contact');
-});
+Route::resource('jobs', JobController::class);
