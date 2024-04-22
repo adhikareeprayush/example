@@ -27,15 +27,14 @@ class JobController extends Controller
     {
             //validation...
         request()->validate([
-            'title' => ['required','min:3'],
-            'salary' => 'required',
+            'title' => ['required','min:3','string'],
+            'salary' => ['required','min:3','numeric'],
         ]);
 
         //creating the job into the database
         Job::create([
             'title' => request('title'),
             'salary'=> request('salary'),
-            'employer_id'=> 1,
         ]);
 
         return redirect('/jobs');
