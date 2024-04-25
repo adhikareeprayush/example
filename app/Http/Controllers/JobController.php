@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use App\Models\Job;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class JobController extends Controller
 {
@@ -25,7 +28,7 @@ class JobController extends Controller
 
     public function store()
     {
-            //validation...
+        //validation...
         request()->validate([
             'title' => ['required','min:3','string'],
             'salary' => ['required','min:3','numeric'],
@@ -42,6 +45,14 @@ class JobController extends Controller
 
     public function edit(Job $job)
     {
+
+        if(Auth::guest())
+        {
+            return redirect('/login');
+        }
+
+        Gate::authorize('edit-job', $job);
+
         return view('jobs.edit', ['job'=>$job]);
     }
 
